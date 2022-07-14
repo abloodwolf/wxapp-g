@@ -1,1 +1,0 @@
-<view class="page-audio data-v-289f1427"><view class="audio-list data-v-289f1427"><view wx:for="{{a}}" wx:for-item="item" class="list-item data-v-289f1427"><text class="item-txt data-v-289f1427">{{item.a}}</text><view class="item-btn data-v-289f1427" bindtap="{{item.b}}">暂停</view><view class="item-btn data-v-289f1427" bindtap="{{item.c}}">播放</view></view></view></view>
