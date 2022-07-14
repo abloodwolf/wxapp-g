@@ -1,0 +1,26 @@
+.page-home.data-v-71e217db {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.page-home .home-banner.data-v-71e217db {
+  margin-top: 20rpx;
+  width: 100%;
+}
+.page-home .home-banner .banner-swiper .swiper-item.data-v-71e217db {
+  width: 100%;
+  height: 100%;
+}
+.page-home .home-common.data-v-71e217db {
+  margin: 60rpx 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.page-home .home-common .common-img.data-v-71e217db {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+}
