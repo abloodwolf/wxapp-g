@@ -51,5 +51,5 @@ const _sfc_main = {
     };
   }
 };
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-289f1427"], ["__file", "D:/work/workspace/demo-test/uniapp-vue/pages/audio-pages/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-289f1427"], ["__file", "D:/work/workspace/demo-test/wxapp-g/pages/audio-pages/index.vue"]]);
 wx.createPage(MiniProgramPage);

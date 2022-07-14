@@ -42,5 +42,5 @@ const _sfc_main = {
     };
   }
 };
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-71e217db"], ["__file", "D:/work/workspace/demo-test/uniapp-vue/pages/home/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-71e217db"], ["__file", "D:/work/workspace/demo-test/wxapp-g/pages/home/index.vue"]]);
 wx.createPage(MiniProgramPage);

@@ -9,5 +9,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: _ctx.danmuList
   };
 }
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/work/workspace/demo-test/uniapp-vue/pages/video-pages/index.vue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "D:/work/workspace/demo-test/wxapp-g/pages/video-pages/index.vue"]]);
 wx.createPage(MiniProgramPage);
