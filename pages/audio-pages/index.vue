@@ -7,8 +7,8 @@
         <button class='select-common select-poetry' :class="{active: audioList.id === 2}" @click='selectPlay(2)'>诗词</button>
       </view>
 		</view>
-		<view class="audio-list" scroll-y>
-			<view class="list-item" v-for="(item, index) in audioList.data">
+		<view class="audio-list">
+			<view class="list-item" :class='{active: itemIndex === index}' v-for="(item, index) in audioList.data">
 				<view class='item-l'>
 					<image class="l-img" :src='item.pic'></image>
 					<text class="l-index">{{ index + 1 }}</text>
@@ -16,8 +16,8 @@
 					<text class="l-author">{{ item.author }}</text>
 				</view>
 				<view class='item-r'>
-					<view class="r-btn" @click='stopAudio(item)'>暂停</view>
-					<view class="r-btn" @click='playAudio(item)'>播放</view>
+					<view class="r-btn" @click='stopAudio(item, index)'>暂停</view>
+					<view class="r-btn" @click='playAudio(item, index)'>播放</view>
 				</view>
 			</view>
 		</view>
@@ -31,6 +31,7 @@
 	// import freeAudio from '../../components/audio-common/free-audio.vue'
 
 	let audioSrc = ref('')
+	let itemIndex = ref(null)
 	let current = reactive({})
 	let innerAudioContext = reactive({})
 	let audioList = reactive({data: songListData, id: 1})
@@ -42,6 +43,7 @@
 	})
   const selectPlay = (type) => {
 		audioList.id = type
+		// itemIndex.value = null
 		if (type === 1) {
 			audioList.data = songListData
 		} else {
@@ -49,6 +51,7 @@
 		}
   }
 	const play = (arr, currentIndex) => {
+		itemIndex.value = currentIndex
 		innerAudioContext.src = arr[currentIndex].url;
 		innerAudioContext.play();
 		innerAudioContext.onEnded((res) => {
@@ -62,9 +65,10 @@
 	const playAll = () => {
 		play(audioList.data, 0)
 	}
-	const playAudio = (item) => {
+	const playAudio = (item, index) => {
 		// audioSrc.value = item.src
 		console.log(item, 'item===')
+		itemIndex.value = index
 		innerAudioContext.src = item.url;
 		innerAudioContext.loop = true;
 		innerAudioContext.play()
