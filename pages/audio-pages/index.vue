@@ -2,12 +2,17 @@
 	<view class="page-audio">
 		<view class='audio-play'>
 			<button class='play-all' @click='playAll()'>播放全部</button>
+      <view class="play-select">
+        <button class='select-common select-song' :class="{active: audioList.id === 1}" @click='selectPlay(1)'>儿歌</button>
+        <button class='select-common select-poetry' :class="{active: audioList.id === 2}" @click='selectPlay(2)'>诗词</button>
+      </view>
 		</view>
-		<view class="audio-list">
-			<view class="list-item" v-for="item in audioList">
+		<view class="audio-list" scroll-y>
+			<view class="list-item" v-for="(item, index) in audioList.data">
 				<view class='item-l'>
-					<image class="l-img" :src='item.poster'></image>
-					<text class="l-name">{{ item.name }}</text>
+					<image class="l-img" :src='item.pic'></image>
+					<text class="l-index">{{ index + 1 }}</text>
+					<text class="l-name">{{ item.title }}</text>
 					<text class="l-author">{{ item.author }}</text>
 				</view>
 				<view class='item-r'>
@@ -21,65 +26,30 @@
 </template>
 
 <script setup>
-	import {
-		ref,
-		reactive,
-		onMounted
-	} from "vue"
+	import { ref, reactive, onMounted } from "vue"
+	import { songListData, poetryListData} from './audioList.js'
 	// import freeAudio from '../../components/audio-common/free-audio.vue'
 
 	let audioSrc = ref('')
 	let current = reactive({})
 	let innerAudioContext = reactive({})
-	const audioList = reactive([{
-			poster: 'https://p1.music.126.net/GlV130UzFe2hEofOpo9k2g==/109951163314358137.jpg',
-			name: '小兔子乖乖',
-			author: '宝宝巴士',
-			src: 'http://m701.music.126.net/20220715004156/57ac6f7b325feefcfc471b14178b9d78/jdyyaac/045f/5658/0753/3573b4e5b7a22868c935096c9c995688.m4a'
-		},
-		{
-			poster: 'https://p1.music.126.net/ybmDi6biknnuVvFIRQn0wQ==/109951164538531061.jpg',
-			name: '两只老虎爱跳舞',
-			author: '儿歌宝贝',
-			src: 'http://m10.music.126.net/20220715002055/613a919b2e8577b4cdd34dc6e2750d63/yyaac/040f/050f/545f/3e90fa77db2e1b9b830bc574ce8bf085.m4a',
-		},
-		{
-			poster: 'https://p2.music.126.net/iRYGuWbKdsA5kD3fLnXSdg==/109951164640698111.jpg',
-			name: '虫儿飞',
-			author: '贝乐虎儿歌',
-			src: 'http://m10.music.126.net/20220715002322/bd9fee614df8204c3916921b5aac1ff8/yyaac/000c/020b/565b/7fdee9e2a25aaf9426aea1d2e3a2e52f.m4a',
-		},
-		{
-			poster: 'https://p1.music.126.net/E_QQdGo7B1LHTo123E_trw==/109951165033259182.jpg',
-			name: '一闪一闪亮晶晶',
-			author: '儿歌',
-			src: 'http://m10.music.126.net/20220715002526/93bb1f1b133739525f3dd3dba3559638/yyaac/obj/wonDkMOGw6XDiTHCmMOi/2735435296/a846/cbf3/fab7/24495d62011b2b3d4f730b4f5a5033cf.m4a',
-		},
-		{
-			poster: 'https://p1.music.126.net/iRYGuWbKdsA5kD3fLnXSdg==/109951164640698111.jpg',
-			name: '小白兔白又白',
-			author: '贝乐虎儿歌',
-			src: 'http://m10.music.126.net/20220715002759/07c77a6fc48b5dd89ada21c92ad2d57c/yyaac/5509/025f/535f/bcbf6976f2558045285ad55e14f1ce9c.m4a',
-		},
-		{
-			poster: 'https://p2.music.126.net/iRYGuWbKdsA5kD3fLnXSdg==/109951164640698111.jpg',
-			name: '小毛驴',
-			author: '贝乐虎儿歌',
-			src: 'http://m10.music.126.net/20220715002917/922585667dc33633983789e114d7736e/yyaac/0558/5608/0459/223e848383abff8851e333221d24ddeb.m4a',
-		}
-	])
-	const audioAction = {
-		method: 'pause'
-	}
+	let audioList = reactive({data: songListData, id: 1})
 
 	onMounted(() => {
 		innerAudioContext = uni.createInnerAudioContext();
 		console.log(innerAudioContext, 'innerAudioContext===')
 		innerAudioContext.autoplay = true;
 	})
-
+  const selectPlay = (type) => {
+		audioList.id = type
+		if (type === 1) {
+			audioList.data = songListData
+		} else {
+			audioList.data = poetryListData
+		}
+  }
 	const play = (arr, currentIndex) => {
-		innerAudioContext.src = arr[currentIndex].src;
+		innerAudioContext.src = arr[currentIndex].url;
 		innerAudioContext.play();
 		innerAudioContext.onEnded((res) => {
 			if (currentIndex < arr.length) {
@@ -90,15 +60,12 @@
 		})
 	}
 	const playAll = () => {
-		for (var i = 0; i < audioList.length; i++) {
-			// innerAudioContext.src = audioList[i].src;
-		}
-		play(audioList, 0)
+		play(audioList.data, 0)
 	}
 	const playAudio = (item) => {
 		// audioSrc.value = item.src
 		console.log(item, 'item===')
-		innerAudioContext.src = item.src;
+		innerAudioContext.src = item.url;
 		innerAudioContext.loop = true;
 		innerAudioContext.play()
 		innerAudioContext.onError((res) => {
@@ -112,20 +79,47 @@
 </script>
 
 <style lang="less" scoped>
+	page {
+		width: 100%;
+		height: 100%;
+	}
 	.page-audio {
-		padding: 10rpx;
+		padding: 0 10rpx;
+		overflow-y: hidden;
+		display: flex;
+		height: 100%;
+		flex-direction: column;
 		.audio-play {
+			margin: 10rpx 0;
+			display: flex;
+			justify-content: space-between;
 			.play-all {
-				width: 140px;
+				width: 100px;
 				height: 40px;
+				margin: 0;
 				border-radius: 20px;
 				border-color: #e61723;
 				line-height: 40px;
 				background: #e61723;
 				color: #fff;
 			}
+			.play-select {
+				display: flex;
+				.select-common {
+					height: 40px;
+					line-height: 40px;
+					padding: 0 8px;
+					margin-left: 10px;
+					&.active {
+						color: #fff;
+						background: #e61723;
+					}
+				}
+			}
 		}
 		.audio-list {
+			flex: 1;
+			overflow: auto;
 			.list-item {
 				display: flex;
 				justify-content: space-between;
@@ -141,10 +135,13 @@
 						height: 60rpx;
 						border-radius: 50%;
 					}
-
+					.l-index {
+						font-size: 12px;
+						margin-left: 8rpx;
+					}
 					.l-name {
 						font-size: 28rpx;
-						margin: 0 20rpx;
+						margin: 0 10rpx;
 					}
 
 					.l-author {
@@ -155,7 +152,7 @@
 
 				.item-r {
 					display: flex;
-
+          flex-shrink: 0;
 					.r-btn {
 						height: 48rpx;
 						line-height: 48rpx;
@@ -170,6 +167,9 @@
 
 				&:nth-child(even) {
 					background: #F3F5F9;
+				}
+				&.active {
+					color: #e61723;
 				}
 			}
 		}
