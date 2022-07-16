@@ -8,7 +8,7 @@
       </view>
 		</view>
 		<view class="audio-list">
-			<view class="list-item" :class='{active: itemIndex === index}' v-for="(item, index) in audioList.data">
+			<view class="list-item" :class='{active: audioList.currentIndex === index}' v-for="(item, index) in audioList.data">
 				<view class='item-l'>
 					<image class="l-img" :src='item.pic'></image>
 					<text class="l-index">{{ index + 1 }}</text>
@@ -26,33 +26,69 @@
 </template>
 
 <script setup>
-	import { ref, reactive, onMounted } from "vue"
+	import { ref, reactive, onMounted, onUnmounted } from "vue"
 	import { songListData, poetryListData} from './audioList.js'
 	// import freeAudio from '../../components/audio-common/free-audio.vue'
 
-	let audioSrc = ref('')
-	let itemIndex = ref(null)
-	let current = reactive({})
 	let innerAudioContext = reactive({})
-	let audioList = reactive({data: songListData, id: 1})
+	let audioList = reactive({data: songListData, id: 1, currentIndex: null})
 
 	onMounted(() => {
-		innerAudioContext = uni.createInnerAudioContext();
+		// innerAudioContext = uni.createInnerAudioContext();
+		innerAudioContext = uni.getBackgroundAudioManager();
 		console.log(innerAudioContext, 'innerAudioContext===')
 		innerAudioContext.autoplay = true;
+		innerAudioContext.onNext(() => {  
+				console.log('onNext')
+				prevNextPlay('onNext')
+		})  
+		innerAudioContext.onPrev(() => {  
+				console.log('onPrev')
+				prevNextPlay('onPrev')
+		}) 
 	})
+	
+	onUnmounted(() => {
+		 innerAudioContext.pause()
+		 innerAudioContext = null
+	 })
+	 const prevNextPlay = (type) => {
+		 let curIndex = audioList.currentIndex
+		 if (type === 'onNext') {
+			curIndex++ 
+			if (curIndex >= audioList.data.length) {
+				curIndex = audioList.data.length
+			}
+		 } else {
+			 curIndex--
+			 if (curIndex <= 0) {
+				 curIndex = 0
+			 }
+		 }
+		 setAudio(audioList.data[curIndex], curIndex);
+		 innerAudioContext.play();
+	 }
+	 // 歌曲、诗词切换
   const selectPlay = (type) => {
 		audioList.id = type
-		// itemIndex.value = null
+		audioList.currentIndex = null
 		if (type === 1) {
 			audioList.data = songListData
 		} else {
 			audioList.data = poetryListData
 		}
   }
+	// 设置播放歌曲
+	const setAudio = (item, curIndex) => {
+		audioList.currentIndex = curIndex
+		innerAudioContext.title = item.title;
+		innerAudioContext.singer = item.author;
+		innerAudioContext.coverImgUrl = item.pic;
+		innerAudioContext.src = item.url;
+	}
+	// 全部播放中单播
 	const play = (arr, currentIndex) => {
-		itemIndex.value = currentIndex
-		innerAudioContext.src = arr[currentIndex].url;
+		setAudio(arr[currentIndex], currentIndex)
 		innerAudioContext.play();
 		innerAudioContext.onEnded((res) => {
 			if (currentIndex < arr.length) {
@@ -62,21 +98,23 @@
 			}
 		})
 	}
+	// 全部播放
 	const playAll = () => {
 		play(audioList.data, 0)
 	}
+	// 单曲播放
 	const playAudio = (item, index) => {
 		// audioSrc.value = item.src
 		console.log(item, 'item===')
-		itemIndex.value = index
-		innerAudioContext.src = item.url;
+		setAudio(item, index)
 		innerAudioContext.loop = true;
 		innerAudioContext.play()
 		innerAudioContext.onError((res) => {
-			console.log(res.errMsg)
+			console.log('onError===', res)
 			console.log(res.errCode)
 		})
 	}
+	// 停止播放
 	const stopAudio = () => {
 		innerAudioContext.pause()
 	}

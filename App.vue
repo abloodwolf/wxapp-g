@@ -8,6 +8,7 @@
 		},
 		onHide: function() {
 			console.log('App Hide')
+			// const = innerAudioContext = uni.getBackgroundAudioManager();
 		}
 	}
 </script>
