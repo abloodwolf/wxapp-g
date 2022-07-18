@@ -17,7 +17,7 @@
     </view>
 	<view class="home-common" @click='gotoVedio'>
 		<image class='common-img' src='../../static/pig.png'></image>
-	  <view>去看小猪佩奇</view>
+	  <view>去搜索音乐</view>
 	</view>
 
 
@@ -42,7 +42,8 @@ const gotoAudio = () => {
 }
 const gotoVedio = () => {
 	uni.navigateTo({
-	  url: '/pages/video-pages/index?id=1&name=uniapp'
+	  // url: '/pages/video-pages/index?id=1&name=uniapp'
+	  url: '/pages/search-pages/index'
 	});
 }
 

@@ -32,34 +32,10 @@
 		},
 		created() {
 			console.log(this.url, 'this.url===')
-			this.context = uni.createInnerAudioContext();
-			
-			this.onTimeUpdate();
-			this.onCanplay();
-			this.onEnded();
-			uni.$on('stop',(id)=> {
-				if(id && id != this.audioId) {
-					this.context.stop();
-					this.status = false;
-				} else if(!id){
-					this.context.stop();
-					this.status = false;
-				}
-			})
 		},
 		methods: {
 			start(id) { //点击播放
-				let audioId = id;
-				console.log(this.context, 'this.context===')
-				this.context.src = this.url;
-				if(this.status) {
-					this.context.pause();
-					this.status = !this.status;
-				}else {
-					uni.$emit('stop',id)
-					this.context.play()
-					this.status = !this.status;
-				}
+				uni.$emit('stop',id)
 			},
 			onCanplay() { //进入可播放状态
 				this.context.onCanplay(() => {

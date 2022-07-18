@@ -1,11 +1,24 @@
 <template>
 	<view class="page-audio">
-		<view class='audio-play'>
-			<button class='play-all' @click='playAll()'>播放全部</button>
-      <view class="play-select">
-        <button class='select-common select-song' :class="{active: audioList.id === 1}" @click='selectPlay(1)'>儿歌</button>
-        <button class='select-common select-poetry' :class="{active: audioList.id === 2}" @click='selectPlay(2)'>诗词</button>
-      </view>
+		<view class="audio-control">
+			<view class='control-play'>
+				<button class='play-all' @click='playAll()'>播放全部</button>
+			  <view class="play-select">
+			    <button class='select-common select-song' :class="{active: audioList.id === 1}" @click='selectPlay(1)'>儿歌</button>
+			    <button class='select-common select-poetry' :class="{active: audioList.id === 2}" @click='selectPlay(2)'>诗词</button>
+			  </view>
+			</view>
+<!--			<view class='control-bar' >-->
+<!--				<view class='bar-l'  @click='playAll()'>-->
+<!--					<image src='../../static/play.png' class='l-icon' v-show='!status'></image>-->
+<!--					<image src='../../static/stop.png' class='l-icon' v-show='status'></image>-->
+<!--				</view>-->
+<!--				<view class='bar-r'>-->
+<!--					<slider></slider>-->
+<!--&lt;!&ndash; 					<slider @change='changeAudio' :activeColor='activeColor' :min='0' :max='duration.toFixed(0)' :value='currentTime.toFixed(0)' :step='0.1'></slider> &ndash;&gt;-->
+<!--				</view>-->
+<!--				&lt;!&ndash; <view class='ml-3'>{{getTime(Math.round(currentTime))}}</view> &ndash;&gt;-->
+<!--			</view>-->
 		</view>
 		<view class="audio-list">
 			<view class="list-item" :class='{active: audioList.currentIndex === index}' v-for="(item, index) in audioList.data">
@@ -21,7 +34,6 @@
 				</view>
 			</view>
 		</view>
-		<!-- <free-audio v-if='audioSrc' :innerAudioContext='innerAudioContext' audioId='audio1' :url='audioSrc'></free-audio> -->
 	</view>
 </template>
 
@@ -30,6 +42,7 @@
 	import { songListData, poetryListData} from './audioList.js'
 	// import freeAudio from '../../components/audio-common/free-audio.vue'
 
+	let audioSrc = ref('')
 	let innerAudioContext = reactive({})
 	let audioList = reactive({data: songListData, id: 1, currentIndex: null})
 
@@ -52,6 +65,7 @@
 		 innerAudioContext.pause()
 		 innerAudioContext = null
 	 })
+	 // 切换上下一首
 	 const prevNextPlay = (type) => {
 		 let curIndex = audioList.currentIndex
 		 if (type === 'onNext') {
@@ -85,6 +99,7 @@
 		innerAudioContext.singer = item.author;
 		innerAudioContext.coverImgUrl = item.pic;
 		innerAudioContext.src = item.url;
+		audioSrc.value = item.url
 	}
 	// 全部播放中单播
 	const play = (arr, currentIndex) => {
@@ -104,7 +119,6 @@
 	}
 	// 单曲播放
 	const playAudio = (item, index) => {
-		// audioSrc.value = item.src
 		console.log(item, 'item===')
 		setAudio(item, index)
 		innerAudioContext.loop = true;
@@ -131,34 +145,48 @@
 		display: flex;
 		height: 100%;
 		flex-direction: column;
-		.audio-play {
-			margin: 10rpx 0;
-			display: flex;
-			justify-content: space-between;
-			.play-all {
-				width: 100px;
-				height: 40px;
-				margin: 0;
-				border-radius: 20px;
-				border-color: #e61723;
-				line-height: 40px;
-				background: #e61723;
-				color: #fff;
-			}
-			.play-select {
+		.audio-control {
+			.control-play {
+				margin: 10rpx 0;
 				display: flex;
-				.select-common {
+				justify-content: space-between;
+				.play-all {
+					width: 100px;
 					height: 40px;
+					margin: 0;
+					border-radius: 20px;
+					border-color: #e61723;
 					line-height: 40px;
-					padding: 0 8px;
-					margin-left: 10px;
-					&.active {
-						color: #fff;
-						background: #e61723;
+					background: #e61723;
+					color: #fff;
+				}
+				.play-select {
+					display: flex;
+					.select-common {
+						height: 40px;
+						line-height: 40px;
+						padding: 0 8px;
+						margin-left: 10px;
+						&.active {
+							color: #fff;
+							background: #e61723;
+						}
 					}
 				}
 			}
+			.control-bar {
+				.bar-l {
+					.l-icon {
+						width: 80rpx;
+						height: 80rpx;
+					}
+				}
+				.bar-r {
+					
+				}
+			}
 		}
+		
 		.audio-list {
 			flex: 1;
 			overflow: auto;
@@ -176,6 +204,7 @@
 						width: 60rpx;
 						height: 60rpx;
 						border-radius: 50%;
+						flex-shrink: 0;
 					}
 					.l-index {
 						font-size: 12px;

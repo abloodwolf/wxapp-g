@@ -17,6 +17,12 @@
 			"style": {
 				"navigationBarTitleText": "看视频"
 			}
+		},
+		{
+			"path": "pages/search-pages/index",
+			"style": {
+				"navigationBarTitleText": "搜音乐"
+			}
 		}
 	],
 	"globalStyle": {
