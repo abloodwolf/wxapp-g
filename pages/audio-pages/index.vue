@@ -120,13 +120,14 @@
 	// 单曲播放
 	const playAudio = (item, index) => {
 		console.log(item, 'item===')
-		setAudio(item, index)
-		innerAudioContext.loop = true;
-		innerAudioContext.play()
-		innerAudioContext.onError((res) => {
-			console.log('onError===', res)
-			console.log(res.errCode)
-		})
+		play(audioList.data, index)
+		// setAudio(item, index)
+		// innerAudioContext.loop = true;
+		// innerAudioContext.play()
+		// innerAudioContext.onError((res) => {
+		// 	console.log('onError===', res)
+		// 	console.log(res.errCode)
+		// })
 	}
 	// 停止播放
 	const stopAudio = () => {

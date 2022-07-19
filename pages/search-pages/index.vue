@@ -100,16 +100,30 @@ onMounted(() => {
 		console.log(e)
 		radioCurrent.value = e.detail.value
 	}
+	// 全部播放中单播
+	const play = (arr, currentIndex) => {
+		setAudio(arr[currentIndex], currentIndex)
+		innerAudioContext.play();
+		innerAudioContext.onEnded((res) => {
+			if (currentIndex < arr.length) {
+				play(arr, currentIndex + 1);
+			} else {
+				play(arr, 0);
+			}
+		})
+	}
+
 	// 单曲播放
 	const playAudio = (item, index) => {
 		console.log(item, 'item===')
-		setAudio(item, index)
-		innerAudioContext.loop = true;
-		innerAudioContext.play()
-		innerAudioContext.onError((res) => {
-			console.log('onError===', res)
-			console.log(res.errCode)
-		})
+		play(audioList.data, index)
+		// setAudio(item, index)
+		// innerAudioContext.loop = true;
+		// innerAudioContext.play()
+		// innerAudioContext.onError((res) => {
+		// 	console.log('onError===', res)
+		// 	console.log(res.errCode)
+		// })
 	}
 	// 设置播放歌曲
 	const setAudio = (item, curIndex) => {
