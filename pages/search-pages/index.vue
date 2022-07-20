@@ -111,6 +111,14 @@ onMounted(() => {
 				play(arr, 0);
 			}
 		})
+		innerAudioContext.onError((res) => {
+			console.log('onError===', res)
+			if (currentIndex < arr.length) {
+				play(arr, currentIndex + 1);
+			} else {
+				play(arr, 0);
+			}
+		})
 	}
 
 	// 单曲播放

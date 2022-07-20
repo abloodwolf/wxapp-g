@@ -112,6 +112,14 @@
 				play(arr, 0);
 			}
 		})
+		innerAudioContext.onError((res) => {
+			console.log('onError===', res)
+			if (currentIndex < arr.length) {
+				play(arr, currentIndex + 1);
+			} else {
+				play(arr, 0);
+			}
+		})
 	}
 	// 全部播放
 	const playAll = () => {
