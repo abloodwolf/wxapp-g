@@ -153,7 +153,7 @@ onMounted(() => {
 			page.value = 1
 		}
 		uni.request({
-			url: 'http://music1.bage.pro/',
+			url: 'https://xz.hao363.com/',
 			data: {
 				input: keyWord.value,
 				filter: 'name',
