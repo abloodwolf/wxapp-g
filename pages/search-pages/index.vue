@@ -39,6 +39,7 @@
 	import { ref,reactive,onMounted,onUnmounted } from "vue"
 	const keyWord = ref('')
 	const page = ref(1)
+	const url = 'https://music.xf1433.com/'
 	let innerAudioContext = reactive({})
 	const radioList = [
 		{ id: 1, value: 'netease', name: '网易'},
@@ -153,7 +154,7 @@ onMounted(() => {
 			page.value = 1
 		}
 		uni.request({
-			url: 'https://xz.hao363.com/',
+			url: url,
 			data: {
 				input: keyWord.value,
 				filter: 'name',
