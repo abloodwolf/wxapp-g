@@ -52,8 +52,8 @@
 		{ id: 9, value: 'lizhi', name: '荔枝'},
 		{ id: 10, value: 'qingting', name: '蜻蜓'},
 		{ id: 11, value: 'ximalaya', name: '喜马拉雅'},
-		{ id: 12, value: '5singyc', name: '5sing原创'},
-		{ id: 13, value: '5singfc', name: '5sing翻唱'}
+		// { id: 12, value: '5singyc', name: '5sing原创'},
+		// { id: 13, value: '5singfc', name: '5sing翻唱'}
 	]
 	const radioCurrent = ref(radioList[0].value)
 	let audioList = reactive({data: [], id: 1, currentIndex: null, moreType: false, error: '暂无内容'})
@@ -153,7 +153,9 @@ onMounted(() => {
 			page.value = 1
 		}
 		uni.request({
-			url: 'https://xz.hao363.com/',
+			// url: 'https://xz.hao363.com/',
+			// url: 'https://music.xf1433.com/',
+			url: 'https://mp3.ltyuanfang.cn/',
 			data: {
 				input: keyWord.value,
 				filter: 'name',
