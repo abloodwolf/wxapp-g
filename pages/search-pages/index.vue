@@ -15,7 +15,8 @@
 			</radio-group>
 		</view>
 		<view class="search-list" v-if='audioList.data.length > 0'>
-			<view class="list-item" :class='{active: audioList.currentIndex === index}' v-for="(item, index) in audioList.data">
+			<view class="list-item" :class='{active: audioList.currentIndex === index}'
+				v-for="(item, index) in audioList.data">
 				<view class='item-l'>
 					<image class="l-img" :src='item.pic'></image>
 					<text class="l-index">{{ index + 1 }}</text>
@@ -30,64 +31,121 @@
 			<view class='list-more' v-if='audioList.moreType' @click='moreMusic'>加载更多</view>
 		</view>
 		<view class="search-list-empty" v-else>
-			 {{ audioList.error }}
+			{{ audioList.error }}
 		</view>
 	</view>
 </template>
 
 <script setup>
-	import { ref,reactive,onMounted,onUnmounted } from "vue"
+	import {
+		ref,
+		reactive,
+		onMounted,
+		onUnmounted
+	} from "vue"
 	const keyWord = ref('')
 	const page = ref(1)
+	// const url = 'https://xz.hao363.com/'
+	// const url = 'https://music.xf1433.com/'
+	const url = 'https://mp3.ltyuanfang.cn/'
 	let innerAudioContext = reactive({})
-	const radioList = [
-		{ id: 1, value: 'netease', name: '网易'},
-		{ id: 2, value: 'qq', name: 'ＱＱ'},
-		{ id: 3, value: 'kugou', name: '酷狗'},
-		{ id: 4, value: 'kugou', name: '酷我'},
-		{ id: 5, value: 'xiami', name: '虾米'},
-		{ id: 6, value: 'baidu', name: '百度'},
-		{ id: 7, value: '1ting', name: '一听'},
-		{ id: 8, value: 'migu', name: '咪咕'},
-		{ id: 9, value: 'lizhi', name: '荔枝'},
-		{ id: 10, value: 'qingting', name: '蜻蜓'},
-		{ id: 11, value: 'ximalaya', name: '喜马拉雅'},
+	const radioList = [{
+			id: 1,
+			value: 'netease',
+			name: '网易'
+		},
+		{
+			id: 2,
+			value: 'qq',
+			name: 'ＱＱ'
+		},
+		{
+			id: 3,
+			value: 'kugou',
+			name: '酷狗'
+		},
+		{
+			id: 4,
+			value: 'kugou',
+			name: '酷我'
+		},
+		{
+			id: 5,
+			value: 'xiami',
+			name: '虾米'
+		},
+		{
+			id: 6,
+			value: 'baidu',
+			name: '百度'
+		},
+		{
+			id: 7,
+			value: '1ting',
+			name: '一听'
+		},
+		{
+			id: 8,
+			value: 'migu',
+			name: '咪咕'
+		},
+		{
+			id: 9,
+			value: 'lizhi',
+			name: '荔枝'
+		},
+		{
+			id: 10,
+			value: 'qingting',
+			name: '蜻蜓'
+		},
+		{
+			id: 11,
+			value: 'ximalaya',
+			name: '喜马拉雅'
+		},
 		// { id: 12, value: '5singyc', name: '5sing原创'},
 		// { id: 13, value: '5singfc', name: '5sing翻唱'}
 	]
 	const radioCurrent = ref(radioList[0].value)
-	let audioList = reactive({data: [], id: 1, currentIndex: null, moreType: false, error: '暂无内容'})
+	let audioList = reactive({
+		data: [],
+		id: 1,
+		currentIndex: null,
+		moreType: false,
+		error: '暂无内容'
+	})
 
-onMounted(() => {
+	onMounted(() => {
 		// innerAudioContext = uni.createInnerAudioContext();
 		innerAudioContext = uni.getBackgroundAudioManager();
 		console.log(innerAudioContext, 'innerAudioContext===')
 		innerAudioContext.autoplay = true;
-		innerAudioContext.onNext(() => {  
-				console.log('onNext')
-				prevNextPlay('onNext')
-		})  
-		innerAudioContext.onPrev(() => {  
-				console.log('onPrev')
-				prevNextPlay('onPrev')
-		}) 
+		innerAudioContext.onNext(() => {
+			console.log('onNext')
+			prevNextPlay('onNext')
+		})
+		innerAudioContext.onPrev(() => {
+			console.log('onPrev')
+			prevNextPlay('onPrev')
+		})
 	})
 	// 切换上下一首
 	const prevNextPlay = (type) => {
-			 let curIndex = audioList.currentIndex
-			 if (type === 'onNext') {
-				curIndex++ 
-				if (curIndex >= audioList.data.length) {
-					curIndex = audioList.data.length
-				}
-			 } else {
-				 curIndex--
-				 if (curIndex <= 0) {
-					 curIndex = 0
-				 }
-			 }
-			 setAudio(audioList.data[curIndex], curIndex);
-			 innerAudioContext.play();
+		let curIndex = audioList.currentIndex
+		if (type === 'onNext') {
+			curIndex++
+			if (curIndex >= audioList.data.length) {
+				curIndex = audioList.data.length
+			}
+		} else {
+			curIndex--
+			if (curIndex <= 0) {
+				curIndex = 0
+			}
+		}
+		setAudio(audioList.data[curIndex], curIndex);
+		innerAudioContext.play();
 	}
 	// 输入失焦和确认事件
 	const inputFun = (e) => {
@@ -145,7 +203,7 @@ onMounted(() => {
 	const stopAudio = () => {
 		innerAudioContext.pause()
 	}
-	
+
 	// 歌曲搜搜
 	const searchFun = (type) => {
 		console.log(keyWord, 'keyWord===')
@@ -153,9 +211,7 @@ onMounted(() => {
 			page.value = 1
 		}
 		uni.request({
-			// url: 'https://xz.hao363.com/',
-			// url: 'https://music.xf1433.com/',
-			url: 'https://mp3.ltyuanfang.cn/',
+			url: url,
 			data: {
 				input: keyWord.value,
 				filter: 'name',
@@ -194,11 +250,12 @@ onMounted(() => {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+
 		.search-cont {
 			display: flex;
 			justify-content: space-between;
 			padding: 0 20rpx;
-		
+
 			.cont-input {
 				flex: 1;
 				border: 2rpx solid #5eb95e;
@@ -208,64 +265,75 @@ onMounted(() => {
 				line-height: 60rpx;
 				padding: 0 10rpx;
 			}
+
 			.cont-btn {}
 		}
+
 		.search-radio {
 			margin: 20rpx 0;
 			border-bottom: 2rpx solid #f5f5f5;
+
 			.radio-group {
 				display: flex;
 				flex-wrap: wrap;
+
 				.group-item {
 					display: flex;
 					align-items: center;
 					margin: 0 5px 5px 0;
+
 					.item-radio {
 						transform: scale(0.7);
 					}
+
 					.item-name {
 						font-size: 24rpx;
 					}
 				}
 			}
 		}
+
 		.search-list {
 			flex: 1;
 			overflow: auto;
+
 			.list-item {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				padding: 20rpx 10rpx;
-		
+
 				.item-l {
 					display: flex;
 					align-items: center;
-		
+
 					.l-img {
 						width: 60rpx;
 						height: 60rpx;
 						border-radius: 50%;
 						flex-shrink: 0;
 					}
+
 					.l-index {
 						font-size: 12px;
 						margin-left: 8rpx;
 					}
+
 					.l-name {
 						font-size: 28rpx;
 						margin: 0 10rpx;
 					}
-		
+
 					.l-author {
 						font-size: 24rpx;
 						color: #555;
 					}
 				}
-		
+
 				.item-r {
 					display: flex;
-		      flex-shrink: 0;
+					flex-shrink: 0;
+
 					.r-btn {
 						height: 48rpx;
 						line-height: 48rpx;
@@ -277,14 +345,16 @@ onMounted(() => {
 						background-color: #f8f8f8;
 					}
 				}
-		
+
 				&:nth-child(even) {
 					background: #F3F5F9;
 				}
+
 				&.active {
 					color: #e61723;
 				}
 			}
+
 			.list-more {
 				font-size: 24rpx;
 				text-align: center;
@@ -292,10 +362,10 @@ onMounted(() => {
 				padding: 20rpx 0;
 			}
 		}
+
 		.search-list-empty {
 			text-align: center;
 			margin: auto;
 		}
 	}
-	
 </style>
