@@ -7,7 +7,7 @@
 				:interval="2000"
 				:duration="500">
 				<swiper-item v-for="item in imgList" :key='item.id'>
-					<image class="swiper-item" :src="item.src"></image>
+					<image  class="swiper-item" :src="item.src"></image>
 				</swiper-item>
 			</swiper>
 		</view>
