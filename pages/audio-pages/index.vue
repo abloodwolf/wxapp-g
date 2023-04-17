@@ -21,7 +21,9 @@
 <!--			</view>-->
 		</view>
 		<view class="audio-list">
-			<view class="list-item" :class='{active: audioList.currentIndex === index}' v-for="(item, index) in audioList.data">
+			<AudioList :audioList='audioList.data' :currentIndex='audioList.currentIndex'/>
+			
+			<!-- <view class="list-item" :class='{active: audioList.currentIndex === index}' v-for="(item, index) in audioList.data">
 				<view class='item-l'>
 					<image class="l-img" :src='item.pic'></image>
 					<text class="l-index">{{ index + 1 }}</text>
@@ -31,8 +33,8 @@
 				<view class='item-r'>
 					<view class="r-btn" @click='stopAudio(item, index)'>暂停</view>
 					<view class="r-btn" @click='playAudio(item, index)'>播放</view>
-				</view>
-			</view>
+				</view> -->
+			<!-- </view> -->
 		</view>
 	</view>
 </template>
@@ -40,6 +42,7 @@
 <script setup>
 	import { ref, reactive, onMounted, onUnmounted } from "vue"
 	import { songListData, poetryListData} from './audioList.js'
+	import AudioList from '../../components/audio-list/index.vue'
 	// import freeAudio from '../../components/audio-common/free-audio.vue'
 
 	let audioSrc = ref('')

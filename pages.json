@@ -22,8 +22,14 @@
 			"path": "pages/search-pages/index",
 			"style": {
 				"navigationBarTitleText": "搜音乐"
+				}
+			},
+			{
+				"path": "pages/song-list/index",
+				"style": {
+					"navigationBarTitleText": "我的歌单"
+				}
 			}
-		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -15,7 +15,8 @@
 			</radio-group>
 		</view>
 		<view class="search-list" v-if='audioList.data.length > 0'>
-			<view class="list-item" :class='{active: audioList.currentIndex === index}'
+			<AudioList :audioList='audioList.data' :currentIndex='audioList.currentIndex'/>
+			<!-- <view class="list-item" :class='{active: audioList.currentIndex === index}'
 				v-for="(item, index) in audioList.data">
 				<view class='item-l'>
 					<image class="l-img" :src='item.pic'></image>
@@ -27,7 +28,7 @@
 					<view class="r-btn" @click='stopAudio(item, index)'>暂停</view>
 					<view class="r-btn" @click='playAudio(item, index)'>播放</view>
 				</view>
-			</view>
+			</view> -->
 			<view class='list-more' v-if='audioList.moreType' @click='moreMusic'>加载更多</view>
 		</view>
 		<view class="search-list-empty" v-else>
@@ -43,7 +44,8 @@
 		onMounted,
 		onUnmounted
 	} from "vue"
-	const keyWord = ref('')
+	import AudioList from '../../components/audio-list/index.vue'
+	const keyWord = ref('刘德华')
 	const page = ref(1)
 	// const url = 'https://xz.hao363.com/'
 	// const url = 'https://music.xf1433.com/'
@@ -250,7 +252,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-
+		padding: 20rpx;
 		.search-cont {
 			display: flex;
 			justify-content: space-between;
@@ -297,7 +299,7 @@
 			flex: 1;
 			overflow: auto;
 
-			.list-item {
+			.list-item1 {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -356,10 +358,11 @@
 			}
 
 			.list-more {
+				flex-shrink: 0;
 				font-size: 24rpx;
 				text-align: center;
 				cursor: pointer;
-				padding: 20rpx 0;
+				padding: 40rpx 0;
 			}
 		}
 
