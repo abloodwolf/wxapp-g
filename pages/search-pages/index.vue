@@ -38,74 +38,26 @@
 </template>
 
 <script setup>
-	import {
-		ref,
-		reactive,
-		onMounted,
-		onUnmounted
-	} from "vue"
+	import { ref, reactive, onMounted, onUnmounted } from "vue"
 	import AudioList from '../../components/audio-list/index.vue'
 	const keyWord = ref('刘德华')
 	const page = ref(1)
 	// const url = 'https://xz.hao363.com/'
-	// const url = 'https://music.xf1433.com/'
-	const url = 'https://mp3.ltyuanfang.cn/'
+	const url = 'https://music.xf1433.com/'
+	// const url = 'https://mp3.ltyuanfang.cn/'
 	let innerAudioContext = reactive({})
-	const radioList = [{
-			id: 1,
-			value: 'netease',
-			name: '网易'
-		},
-		{
-			id: 2,
-			value: 'qq',
-			name: 'ＱＱ'
-		},
-		{
-			id: 3,
-			value: 'kugou',
-			name: '酷狗'
-		},
-		{
-			id: 4,
-			value: 'kugou',
-			name: '酷我'
-		},
-		{
-			id: 5,
-			value: 'xiami',
-			name: '虾米'
-		},
-		{
-			id: 6,
-			value: 'baidu',
-			name: '百度'
-		},
-		{
-			id: 7,
-			value: '1ting',
-			name: '一听'
-		},
-		{
-			id: 8,
-			value: 'migu',
-			name: '咪咕'
-		},
-		{
-			id: 9,
-			value: 'lizhi',
-			name: '荔枝'
-		},
-		{
-			id: 10,
-			value: 'qingting',
-			name: '蜻蜓'
-		},
-		{
-			id: 11,
-			value: 'ximalaya',
-			name: '喜马拉雅'
-		},
+	const radioList = [
+		{ id: 1, value: 'netease', name: '网易' },
+		{ id: 2, value: 'qq', name: 'ＱＱ' },
+		{ id: 3, value: 'kugou', name: '酷狗' },
+		{ id: 4, value: 'kugou', name: '酷我' },
+		{ id: 5, value: 'xiami', name: '虾米' },
+		{ id: 6, value: 'baidu', name: '百度' },
+		{ id: 7, value: '1ting', name: '一听' },
+		{ id: 8, value: 'migu', name: '咪咕' },
+		{ id: 9, value: 'lizhi', name: '荔枝' },
+		{ id: 10, value: 'qingting', name: '蜻蜓' },
+		{ id: 11, value: 'ximalaya', name: '喜马拉雅' },
 		// { id: 12, value: '5singyc', name: '5sing原创'},
 		// { id: 13, value: '5singfc', name: '5sing翻唱'}
 	]
@@ -253,6 +205,7 @@
 		flex-direction: column;
 		height: 100%;
 		padding: 20rpx;
+		box-sizing: border-box
 		.search-cont {
 			display: flex;
 			justify-content: space-between;
@@ -362,7 +315,7 @@
 				font-size: 24rpx;
 				text-align: center;
 				cursor: pointer;
-				padding: 40rpx 0;
+				padding: 40rpx 0 60rpx 0;
 			}
 		}
 
