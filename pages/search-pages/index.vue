@@ -43,8 +43,10 @@
 	const keyWord = ref('刘德华')
 	const page = ref(1)
 	// const url = 'https://xz.hao363.com/'
-	const url = 'https://music.xf1433.com/'
+	// const url = 'https://music.xf1433.com/'
 	// const url = 'https://mp3.ltyuanfang.cn/'
+	// const url = 'https://music.liuzhijin.cn/'
+	const url = 'https://mp3.ltyuanfang.cn/'
 	let innerAudioContext = reactive({})
 	const radioList = [
 		{ id: 1, value: 'netease', name: '网易' },
