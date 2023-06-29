@@ -194,11 +194,7 @@
 		flex-direction: column;
 		height: 100%;
 		padding: 20rpx;
-		box-sizing: border-box
-	
-
-		
-	}
+		box-sizing: border-box;
 	.search-cont {
 		display: flex;
 		justify-content: space-between;
@@ -251,9 +247,13 @@
 			padding: 40rpx 0 60rpx 0;
 		}
 	}
-
+	
 	.search-list-empty {
 			text-align: center;
 			margin: auto;
 		}
+
+		
+	}
+	
 </style>
