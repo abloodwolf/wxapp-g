@@ -16,19 +16,6 @@
 		</view>
 		<view class="search-list" v-if='audioList.data.length > 0'>
 			<AudioList :audioList='audioList.data' :currentIndex='audioList.currentIndex'/>
-			<!-- <view class="list-item" :class='{active: audioList.currentIndex === index}'
-				v-for="(item, index) in audioList.data">
-				<view class='item-l'>
-					<image class="l-img" :src='item.pic'></image>
-					<text class="l-index">{{ index + 1 }}</text>
-					<text class="l-name">{{ item.title }}</text>
-					<text class="l-author">{{ item.author }}</text>
-				</view>
-				<view class='item-r'>
-					<view class="r-btn" @click='stopAudio(item, index)'>暂停</view>
-					<view class="r-btn" @click='playAudio(item, index)'>播放</view>
-				</view>
-			</view> -->
 			<view class='list-more' v-if='audioList.moreType' @click='moreMusic'>加载更多</view>
 		</view>
 		<view class="search-list-empty" v-else>
@@ -208,122 +195,65 @@
 		height: 100%;
 		padding: 20rpx;
 		box-sizing: border-box
-		.search-cont {
-			display: flex;
-			justify-content: space-between;
-			padding: 0 20rpx;
+	
 
-			.cont-input {
-				flex: 1;
-				border: 2rpx solid #5eb95e;
-				border-radius: 8rpx;
-				margin-right: 30rpx;
-				height: 60rpx;
-				line-height: 60rpx;
-				padding: 0 10rpx;
-			}
-
-			.cont-btn {}
-		}
-
-		.search-radio {
-			margin: 20rpx 0;
-			border-bottom: 2rpx solid #f5f5f5;
-
-			.radio-group {
-				display: flex;
-				flex-wrap: wrap;
-
-				.group-item {
-					display: flex;
-					align-items: center;
-					margin: 0 5px 5px 0;
-
-					.item-radio {
-						transform: scale(0.7);
-					}
-
-					.item-name {
-						font-size: 24rpx;
-					}
-				}
-			}
-		}
-
-		.search-list {
+		
+	}
+	.search-cont {
+		display: flex;
+		justify-content: space-between;
+		padding: 0 20rpx;
+	
+		.cont-input {
 			flex: 1;
-			overflow: auto;
-
-			.list-item1 {
+			border: 2rpx solid #5eb95e;
+			border-radius: 8rpx;
+			margin-right: 30rpx;
+			height: 60rpx;
+			line-height: 60rpx;
+			padding: 0 10rpx;
+		}
+	}
+	
+	.search-radio {
+		margin: 20rpx 0;
+		border-bottom: 2rpx solid #f5f5f5;
+	
+		.radio-group {
+			display: flex;
+			flex-wrap: wrap;
+	
+			.group-item {
 				display: flex;
-				justify-content: space-between;
 				align-items: center;
-				padding: 20rpx 10rpx;
-
-				.item-l {
-					display: flex;
-					align-items: center;
-
-					.l-img {
-						width: 60rpx;
-						height: 60rpx;
-						border-radius: 50%;
-						flex-shrink: 0;
-					}
-
-					.l-index {
-						font-size: 12px;
-						margin-left: 8rpx;
-					}
-
-					.l-name {
-						font-size: 28rpx;
-						margin: 0 10rpx;
-					}
-
-					.l-author {
-						font-size: 24rpx;
-						color: #555;
-					}
+				margin: 0 5px 5px 0;
+	
+				.item-radio {
+					transform: scale(0.7);
 				}
-
-				.item-r {
-					display: flex;
-					flex-shrink: 0;
-
-					.r-btn {
-						height: 48rpx;
-						line-height: 48rpx;
-						margin-left: 20rpx;
-						padding: 0 20rpx;
-						border: 2rpx solid #ccc;
-						border-radius: 8rpx;
-						color: #588CE9;
-						background-color: #f8f8f8;
-					}
+	
+				.item-name {
+					font-size: 24rpx;
 				}
-
-				&:nth-child(even) {
-					background: #F3F5F9;
-				}
-
-				&.active {
-					color: #e61723;
-				}
-			}
-
-			.list-more {
-				flex-shrink: 0;
-				font-size: 24rpx;
-				text-align: center;
-				cursor: pointer;
-				padding: 40rpx 0 60rpx 0;
 			}
 		}
+	}
+	
+	.search-list {
+		flex: 1;
+		overflow: auto;
+	
+		.list-more {
+			flex-shrink: 0;
+			font-size: 24rpx;
+			text-align: center;
+			cursor: pointer;
+			padding: 40rpx 0 60rpx 0;
+		}
+	}
 
-		.search-list-empty {
+	.search-list-empty {
 			text-align: center;
 			margin: auto;
 		}
-	}
 </style>
