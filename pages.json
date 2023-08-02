@@ -29,6 +29,12 @@
 				"style": {
 					"navigationBarTitleText": "我的歌单"
 				}
+			},
+			{
+				"path": "pages/weather/index",
+				"style": {
+					"navigationBarTitleText": "天气"
+				}
 			}
 	],
 	"globalStyle": {
