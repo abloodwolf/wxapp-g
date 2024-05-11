@@ -27,13 +27,9 @@
 <script setup>
 	import { ref, reactive, onMounted, onUnmounted } from "vue"
 	import AudioList from '../../components/audio-list/index.vue'
+	import { searchMusic } from'../../api/index.js'
 	const keyWord = ref('刘德华')
 	const page = ref(1)
-	// const url = 'https://xz.hao363.com/'
-	// const url = 'https://music.xf1433.com/'
-	// const url = 'https://mp3.ltyuanfang.cn/'
-	// const url = 'https://music.liuzhijin.cn/'
-	const url = 'https://mp3.ltyuanfang.cn/'
 	let innerAudioContext = reactive({})
 	const radioList = [
 		{ id: 1, value: 'netease', name: '网易' },
@@ -148,37 +144,24 @@
 	}
 
 	// 歌曲搜搜
-	const searchFun = (type) => {
+	const searchFun = async (type) => {
 		console.log(keyWord, 'keyWord===')
 		if (type === 'init') {
 			page.value = 1
 		}
-		uni.request({
-			url: url,
-			data: {
+		const data = {
 				input: keyWord.value,
 				filter: 'name',
 				type: radioCurrent.value,
 				page: page.value
-			},
-			method: 'POST',
-			header: {
-				'X-Requested-With': 'XMLHttpRequest',
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			},
-			success: (res) => {
-				console.log('res', res.data);
-				let temp = audioList.data
-				audioList.moreType = res.data.data.length > 9
-				type === 'more' ? temp.push(...res.data.data) : temp = res.data.data
-				audioList.data = temp
-				audioList.error = res.data.error
-				// this.text = 'request success';
-			},
-			fail: (error) => {
-				console.log('error', error)
 			}
-		});
+		const res = await searchMusic(data)
+		console.log('res', res);
+		let temp = audioList.data
+		audioList.moreType = res.data.length > 9
+		type === 'more' ? temp.push(...res.data) : temp = res.data
+		audioList.data = temp
+		audioList.error = res.error
 	}
 	// 加载更多
 	const moreMusic = (e) => {

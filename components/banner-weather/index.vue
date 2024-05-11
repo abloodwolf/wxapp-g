@@ -1,175 +1,116 @@
 <template>
 	<view class="weather">
-		<!-- <web-view :src="srcUrl" :webview-styles='webviewStyles'></web-view> -->
-		<!-- <div id="he-plugin-standard">{{weatherData?.rain?.txt}}</div> -->
-		<view>{{ locationData?.location }}</view>
-		<view class="weather-l">
-					<view class="l-location">{{ locationData?.location }}</view>
-					<view class="l-we">
-						<view class="we-img"> 
-							<!-- <image :src=`${imgBaseUrl}/icon/c/${weatherData?.now?.conod_code}d.png` mode=""></image> -->
-							<image src='https://widget-s.qweather.net/img/plugin/190516/icon/c/101d.png' mode=""></image>
-						</view>
-						<view class="we-info">
-							<view class="info-tmp">{{weatherData?.now?.tmp}}°</view>
-							<view class="info-txt">{{weatherData?.now?.cond_txt}}</view>
-						</view>
-						
-					</view>
-					<view class="l-future">{{weatherData?.rain?.txt}}</view>
+		<view class="weather-now">
+			<view class="now-city">{{ locationData.locationName }}</view>
+			<view class="now-cont" @click="gotoWeater">
+				<text :class=" 'cont-item cont-icon qi-' + weatherData?.now?.icon "></text>
+				<text class="cont-item">{{weatherData?.now?.text}}</text>
+				<text class="cont-item">{{weatherData?.now?.windDir}}{{weatherData?.now?.windScale }}级</text>
+				<!-- <text class="cont-item" >{{weatherData?.now?.windScale }}级</text> -->
+				<text class="cont-item">{{weatherData?.now?.temp }}°</text>
+			</view>
 		</view>
-		<view class="weather-r"></view>
+		<view class="weather-hours">
+			<view class="hours-item" v-for="(item, index) in weatherData?.hourly">
+				<view class="item-t">
+					<text :class=" 't-common t-icon qi-' + item?.icon "></text>
+					<text class="t-common">{{item?.temp }}°</text>
+				</view>
+				<view class="item-b">{{ timeForamt(item?.fxTime, 'HH') }}h</view>
+			</view>
+		</view>
+		<view class="weather-daily7d">
+			<view class="daily7d-item" v-for="(item, index) in weatherData?.daily7d">
+				<view class="item-t">
+					<text :class=" 't-common t-icon qi-' + item?.iconDay "></text>
+					<text class="t-common">{{item?.tempMin }}°~{{item?.tempMax }}°</text>
+				</view>
+				<view class="item-b">{{ timeForamt(new Date(item?.fxDate), 'MM-DD') }} {{getWeekDayText(item?.fxDate) }}</view>
+			</view>
+		</view>
 	</view>
 </template>
 <script setup>
 	import {
 		ref,
 		reactive,
-		onMounted
+		onMounted,
+		computed,
+		defineProps,
+		watch 
 	} from "vue"
-	import {
-		onReady
-	} from '@dcloudio/uni-app'
+	import { onReady } from '@dcloudio/uni-app'
+	import { apiWeatherNow, apiWeather24h, apiWeather7d } from '../../api/index.js'
+	import { timeForamt, getWeekDayText } from '../../utils/date-format.js'
 
-import city from './city.js'
-	const wKey = '7176405e1d2d435896ed85c3c5fe6dbe'
-	const wLang = 'zh'
-	let srcUrl = ref(
-		'https://widget.qweather.net/standard/demo.html?width=375&height=150&background=1&dataColor=FFFFFF&key=7176405e1d2d435896ed85c3c5fe6dbe&demo=true&v=_1690892449138'
-	)
-	let imgBaseUrl = ref('https://widget-s.qweather.net/img/plugin/190516')
-	let weatherData = reactive({})
-	let array = reactive(city)
-	let curIndex = ref('')
-	let locationData = reactive({})
-	// let srcUrl = ref('/index.html')
-	let webviewStyles = reactive({
-		width: '375px',
-		height: '150px'
+	let weatherData = reactive({
+		now: {},
+		hourly: [],
+		daily7d: [],
+		fxLink: ''
 	})
+	let locationData = reactive({
+		locationName: '',
+		locationId: ''
+	})
+
+const props = defineProps({
+	  locationName: String,
+	  locationId: String,
+	});
+	const { locationName, locationId } = props;
+	
 	onReady(() => {
 
 	})
-	const bindPickerChange = (val) => {
-		console.log(val, 'bindPickerChange===')
+	
+	// 获取小时级天气预报
+	const getWeatherNow = async (locationId) => {
+		const data = {
+			// key: wKey,
+			location: locationId,
+		}
+		const res = await apiWeatherNow(data)
+		// console.log(res, 'apiWeatherNow======')
+		weatherData.now = res?.now
+		weatherData.fxLink = res?.fxLink
 	}
-	const getIpCode = (location) => {
-		const url = 'https://search.heweather.net/find'
-		uni.request({
-			url: url,
-			data: {
-				key: wKey,
-				location: location,
-				lang: wLang,
-				group: 'cn',
-			},
-			method: 'GET',
-			header: {
-				'X-Requested-With': 'XMLHttpRequest',
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			},
-			success: (res) => {
-				console.log('getIpCode', res.data);
-				// weatherData = res.data
-				Object.assign(locationData, res?.data?.HeWeather6?.[0].basic?.[0])
-				// this.text = 'request success';
-			},
-			fail: (error) => {
-				console.log('error', error)
-			}
+	const getWeather24h = async (locationId) => {
+		const data = {
+			// key: wKey,
+			location: locationId,
+		}
+		const res = await apiWeather24h(data)
+		// console.log(res, 'apiWeather24h======')
+		weatherData.hourly = res?.hourly
+	}
+	const getWeather7d = async (locationId) => {
+		const data = {
+			// key: wKey,
+			location: locationId,
+		}
+		const res = await apiWeather7d(data)
+		// console.log(res, 'apiWeather7d======')
+		weatherData.daily7d = res?.daily
+	}
+	const gotoWeater = (type) => {
+		console.log(type, 'gotoWeater');
+		uni.navigateTo({
+			url: `/pages/weather/index?url=${weatherData?.fxLink}`
 		});
 	}
-	const getIp = () => {
-		const url = 'https://restapi.amap.com/v3/ip?key=d1a7a5151bc3b5f7de34c34f824da3fe&s=rsv3'
-		uni.request({
-			url: url,
-			data: {},
-			method: 'GET',
-			header: {
-				'X-Requested-With': 'XMLHttpRequest',
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			},
-			success: (res) => {
-				console.log('getIp', res.data);
-				// weatherData = res.data
-				getIpCode(res.data.adcode)
-				// this.text = 'request success';
-			},
-			fail: (error) => {
-				console.log('error', error)
-			}
-		});
-	}
-	const getWeather = () => {
-		uni.request({
-			url: 'https://widget-api.heweather.net/s6/plugin/view',
-			data: {
-				key: wKey,
-				location: 'CN101010100',
-				lang: wLang,
-				charset: 'utf-8'
-			},
-			method: 'GET',
-			header: {
-				'X-Requested-With': 'XMLHttpRequest',
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			},
-			success: (res) => {
-				console.log('getWeather', res.data);
-				// weatherData = res.data
-				Object.assign(weatherData, res.data)
-				// this.text = 'request success';
-			},
-			fail: (error) => {
-				console.log('error', error)
-			}
-		});
-	}
+	watch(()=>props.locationId,(newValue,oldValue)=>{
+		// console.log(props.locationName, 'locationName, locationId变化了',newValue,oldValue)
+		locationData.locationId = newValue
+		locationData.locationName = props.locationName
+		getWeatherNow(newValue)
+		getWeather24h(newValue)
+		getWeather7d(newValue)
+	},{immediate:true,deep:true})
 	onMounted(() => {
-		getIp()
-		getWeather()
-		// console.log(window, 'window===', globalThis)
-		// WIDGET = {
-		// 	CONFIG: {
-		// 		"layout": "1",
-		// 		"width": "375",
-		// 		"height": "150",
-		// 		"background": "1",
-		// 		"dataColor": "FFFFFF",
-		// 		"key": "d3932e20fe244caa868123aca83dd025"
-		// 	},
-		// };
-		// (function(d) {
-			// let link = ''; //要获取的按钮
-			// const btn = uni.createSelectorQuery().in(this);
-			// btn.select().boundingClientRect(butn => {
-			// 	link = butn; //赋值
-			// 	link.rel = 'stylesheet'
-			// 	link.href = '../../utils/qweather/index.css'
-			// }).exec();
-			// let script = ''; //要获取的按钮
-			// const btn1 = uni.createSelectorQuery().in(this);
-			// btn1.select().boundingClientRect(butn => {
-			// 	script = butn; //赋值
-			// 	script.src = '../../utils/qweather/index.js'
-			// }).exec();
-			// var c = d.createElement('link')
-			// c.rel = 'stylesheet'
-			// c.href = '../../utils/qweather/index.css'
-			// var s = d.createElement('script')
-			// s.src = '../../utils/qweather/index.js'
-			// var sn = d.getElementsByTagName('script')[0]
-			// sn.parentNode.insertBefore(c, sn)
-			// sn.parentNode.insertBefore(s, sn)
-		// })(document)
-		// window.setTimeout(() => {
-		// 	let script = document.createElement('script')
-		// 	script.type = 'text/javascript'
-		// 	script.src =
-		// 			'https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0'
-		// 	document.getElementsByTagName('head')[0].appendChild(script)
-		// },0)
-		// 	console.log('weather')
+		// getWeatherNow(locationId)
+		// getWeather24h(locationId)
+		// getWeather7d(locationId)
 	})
 </script>
 
@@ -177,5 +118,64 @@ import city from './city.js'
 	.weather {
 		width: 100%;
 		height: 100%;
+
+		.weather-now {
+			display: flex;
+			align-items: center;
+			padding: 40rpx 20rpx;
+			border-radius: 8rpx;
+			margin-bottom: 8rpx;
+			background-image: linear-gradient(225deg, #D0DAE8, #CCD4DF 55%, #A5B3C5);
+
+			.now-city {
+				margin-right: 40rpx;
+				font-size: 56rpx;
+			}
+
+			.now-cont {
+				.cont-item {
+					margin: 0 8rpx;
+					font-size: 40rpx;
+
+					&.cont-icon {
+						font-size: 50rpx;
+					}
+				}
+			}
+		}
+	
+		.weather-hours {
+			display: flex;
+			overflow-x: auto;
+			background-image: linear-gradient(225deg, #D0DAE8, #CCD4DF 55%, #A5B3C5);
+			padding: 30rpx 0;
+			border-radius: 8rpx;
+			margin-bottom: 8rpx;
+			.hours-item {
+				padding: 0 8rpx;
+				flex-shrink: 0;
+				border-right: 1px solid #DEDFE2;
+				.item-t {
+					display: flex;
+				}
+			}
+		}
+		.weather-daily7d {
+			display: flex;
+			overflow-x: auto;
+			background-image: linear-gradient(225deg, #D0DAE8, #CCD4DF 55%, #A5B3C5);
+			padding: 30rpx 0;
+			border-radius: 8rpx;
+			margin-bottom: 8rpx;
+			.daily7d-item {
+				padding: 0 8rpx;
+				flex-shrink: 0;
+				border-right: 1px solid #DEDFE2;
+				.item-t {
+					display: flex;
+				}
+			}
+		}
+	
 	}
 </style>

@@ -1,15 +1,22 @@
 <template>
 	<view class="page-home">
+		<view class="home-header">
+			<view class="header-location">
+				<uni-data-picker
+				 :localdata="locationData.cityList" 
+				 popup-title="请选择城市" 
+				 :map="{text:'nameZh',value:'id'}"
+				 @change="onchange"
+				 @nodeclick="onnodeclick">
+				</uni-data-picker>
+			</view>
+			<view class="header-user cont-common" @click='gotoUserList'>
+				<image mode='aspectFill' class='common-img' src='../../static/dog.png'></image>
+				<view>个人中心</view>
+			</view>
+		</view>
 		<view class="home-banner" >
-			<view class="banner-common banner-view" @click='gotoWeater(1)'>查看概览天气预报</view>
-			<view class="banner-common banner-detail" @click='gotoWeater(2)'>查看详细天气预报</view>
-			<!-- <BannerWeather/> -->
-			<!-- <web-view :src="srcUrl" ></web-view> -->
-			<!-- <swiper class="banner-swiper" circular :autoplay="true" :interval="2000" :duration="500">
-				<swiper-item v-for="item in imgList" :key='item.id'>
-					<image class="swiper-item" :src="item.src"></image>
-				</swiper-item>
-			</swiper> -->
+			<BannerWeather :locationName="locationData.locationName" :locationId="locationData.locationId" class="banner-cont"/>
 		</view>
 		<view class="page-cont">
 			<view class="cont-common home-audio" @click='gotoAudio'>
@@ -20,10 +27,6 @@
 				<image class='common-img' src='../../static/pig.png'></image>
 				<view>去搜索音乐</view>
 			</view>
-			<view class="cont-common" @click='gotoUserList'>
-				<image mode='aspectFill' class='common-img' src='../../static/dog.png'></image>
-				<view>个人中心</view>
-			</view>
 		</view>
 
 
@@ -32,18 +35,15 @@
 <script setup>
 	import {ref,reactive,onMounted} from "vue"
 	import BannerWeather from '../../components/banner-weather/index.vue'
+	import cityList from '../../utils/cityDataMultilevel.js'
 	
-	const title = ref('hello word')
-	const WIDGET = reactive({
-		"CONFIG": {
-			"layout": "1",
-			"width": "450",
-			"height": "150",
-			"background": "1",
-			"dataColor": "FFFFFF",
-			"key": "5a8fc64ea8e0469fb256ad73d33deaac"
-		}
+	let locationData = reactive({
+		locationName: '北京',
+		locationId: '101010100',
+		cityList: cityList
 	})
+	const title = ref('hello word')
+
 	const imgList = reactive([{
 			id: 1,
 			src: '/static/dog.png'
@@ -58,10 +58,17 @@
 		},
 	])
 
-	let srcUrl = ref('https://widget.qweather.net/standard/demo.html?width=375&height=150&background=1&dataColor=FFFFFF&key=7176405e1d2d435896ed85c3c5fe6dbe&demo=true&v=_1690892449138')
 	let avatarUrl = ref('')
-	let webviewStyles = reactive({})
-	
+	const onchange = (e) => {
+		// locationData.currentCity = e.detail.value?.text
+		console.log(e, 'e====', )
+		// const value = e.detail.value
+	}
+	const onnodeclick = (node) => {
+		console.log(node.id, 'node====')
+		locationData.locationId = node?.id
+		locationData.locationName = node?.nameZh
+	}
 	// onShow: function() {
 	// 			console.log('App Show')
 	// },
@@ -132,12 +139,38 @@
 		justify-content: space-around;
 		align-items: center;
 
+	.home-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 95%;
+		padding: 20rpx;
+		
+		.header-location {
+			width: 400rpx;
+		}
+		.header-user {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+			.common-img {
+				width: 100rpx;
+				height: 100rpx;
+				border-radius: 50%;
+			}
+		}
+	}
 		.home-banner {
 			width: 100%;
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
-			margin: 80rpx;
+			margin-bottom: 80rpx;
+			.banner-cont {
+				width: 100%;
+				height: 100%;
+			}
 			.banner-common {
 				text-align: center;
 				font-size: 34rpx;
@@ -166,7 +199,6 @@
 			justify-content: space-around;
 			// padding: 0 30rpx;
 			flex-wrap: wrap;
-
 			.cont-common {
 				// width: 50%;
 				margin: 60rpx;
@@ -175,14 +207,6 @@
 				flex-direction: column;
 				justify-content: space-around;
 				align-items: center;
-				.avatar-wrapper {
-					width: 200rpx;
-					height: 200rpx;
-					.avatar {
-						width: 200rpx;
-						height: 200rpx;
-					}
-				}
 				.common-img {
 					width: 200rpx;
 					height: 200rpx;
