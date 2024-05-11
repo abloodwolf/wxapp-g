@@ -4,7 +4,7 @@ const request = ({url, data, method = 'GET', header}) => {
 			url: url,
 			data: data,
 			method: method,
-			// header: header,
+			header: header,
 			success: (res) => {
 				console.log('res==', res)
 				if(+res?.statusCode === 200) {
