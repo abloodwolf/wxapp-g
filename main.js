@@ -12,7 +12,7 @@ import App from './App'
 
 // #ifdef VUE3
 import { createSSRApp } from 'vue'
-import 'qweather-icons/font/qweather-icons.css'
+import './styles/qweather-icons1.css'
 
 
 export function createApp() {

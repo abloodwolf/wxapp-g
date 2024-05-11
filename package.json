@@ -18,7 +18,6 @@
     },
     "dependencies": {
         "@dcloudio/uni-ui": "^1.5.5",
-        "dayjs": "^1.11.11",
-        "qweather-icons": "^1.6.0"
+        "dayjs": "^1.11.11"
     }
 }
