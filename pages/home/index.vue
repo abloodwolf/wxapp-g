@@ -10,6 +10,7 @@
 				 @nodeclick="onnodeclick">
 				</uni-data-picker>
 			</view>
+			<view class="header-current" @click="getCurrent">{{currentCity}}</view>
 			<view class="header-user cont-common" @click='gotoUserList'>
 				<image mode='aspectFill' class='common-img' src='../../static/dog.png'></image>
 				<view>个人中心</view>
@@ -42,7 +43,7 @@
 		locationId: '101010100',
 		cityList: cityList
 	})
-	const title = ref('hello word')
+	const currentCity = ref('郑州')
 
 	const imgList = reactive([{
 			id: 1,
@@ -59,6 +60,10 @@
 	])
 
 	let avatarUrl = ref('')
+	const getCurrent = () => {
+		locationData.locationId = 101180106
+		locationData.locationName = currentCity
+	}
 	const onchange = (e) => {
 		// locationData.currentCity = e.detail.value?.text
 		console.log(e, 'e====', )
@@ -148,6 +153,9 @@
 		
 		.header-location {
 			width: 400rpx;
+		}
+		.header-current {
+			padding: 20rpx;
 		}
 		.header-user {
 			display: flex;
