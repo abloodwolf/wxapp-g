@@ -10,7 +10,7 @@
 				 @nodeclick="onnodeclick">
 				</uni-data-picker>
 			</view>
-			<view class="header-current" @click="getCurrent">{{currentCity}}</view>
+			<view class="header-current" @click="getCurrent">郑州</view>
 			<view class="header-user cont-common" @click='gotoUserList'>
 				<image mode='aspectFill' class='common-img' src='../../static/dog.png'></image>
 				<view>个人中心</view>
@@ -43,7 +43,6 @@
 		locationId: '101010100',
 		cityList: cityList
 	})
-	const currentCity = ref('郑州')
 
 	const imgList = reactive([{
 			id: 1,
@@ -62,15 +61,15 @@
 	let avatarUrl = ref('')
 	const getCurrent = () => {
 		locationData.locationId = 101180106
-		locationData.locationName = currentCity
+		locationData.locationName = '郑州'
 	}
 	const onchange = (e) => {
 		// locationData.currentCity = e.detail.value?.text
-		console.log(e, 'e====', )
+		// console.log(e, 'e====', )
 		// const value = e.detail.value
 	}
 	const onnodeclick = (node) => {
-		console.log(node.id, 'node====')
+		// console.log(node.id, 'node====')
 		locationData.locationId = node?.id
 		locationData.locationName = node?.nameZh
 	}
