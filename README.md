@@ -25,4 +25,5 @@
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
-
+git: [github](https://github.com/abloodwolf/wxapp-g.git)
+https://gitee.com/wutong66/wxapp-g.git
