@@ -20,3 +20,7 @@ export const apiWeatherNow = (data) => request({url: config.hfBaseUrl + config.h
 export const apiWeather24h = (data) => request({url: config.hfBaseUrl + config.hfWeather24h, method: 'GET', data: {key: config.hfKey, ...data}})
 
 export const apiWeather7d = (data) => request({url: config.hfBaseUrl + config.hfWeather7d, method: 'GET', data: {key: config.hfKey, ...data}})
+
+export const apiGeocoder = (data) => request({url: config.geocoderUrl, method: 'GET', data: {key: config.qqmapKey, ...data}})
+
+// https://apis.map.qq.com/ws/geocoder/v1/?location=39.984154,116.307490&key=GJOBZ-36VCA-AJHKP-CUKS5-LF6EO-42BBY&get_poi=1

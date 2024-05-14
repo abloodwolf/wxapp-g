@@ -2,22 +2,19 @@
 	<view class="page-home">
 		<view class="home-header">
 			<view class="header-location">
-				<uni-data-picker
-				 :localdata="locationData.cityList" 
-				 popup-title="请选择城市" 
-				 :map="{text:'nameZh',value:'id'}"
-				 @change="onchange"
-				 @nodeclick="onnodeclick">
+				<uni-data-picker :localdata="locationData.cityList" popup-title="请选择城市" :map="{text:'nameZh',value:'id'}"
+					@change="onchange" @nodeclick="onnodeclick">
 				</uni-data-picker>
 			</view>
-			<view class="header-current" @click="getCurrent">郑州</view>
+			<view class="header-current" @click="getCurrent">定位</view>
 			<view class="header-user cont-common" @click='gotoUserList'>
 				<image mode='aspectFill' class='common-img' src='../../static/dog.png'></image>
 				<view>个人中心</view>
 			</view>
 		</view>
-		<view class="home-banner" >
-			<BannerWeather :locationName="locationData.locationName" :locationId="locationData.locationId" class="banner-cont"/>
+		<view class="home-banner">
+			<BannerWeather :adInfo='locationData.adInfo'
+				class="banner-cont" />
 		</view>
 		<view class="page-cont">
 			<view class="cont-common home-audio" @click='gotoAudio'>
@@ -34,14 +31,22 @@
 	</view>
 </template>
 <script setup>
-	import {ref,reactive,onMounted} from "vue"
+	import {
+		ref,
+		reactive,
+		onMounted
+	} from "vue"
 	import BannerWeather from '../../components/banner-weather/index.vue'
 	import cityList from '../../utils/cityDataMultilevel.js'
+	import { apiGeocoder } from '../../api/index.js'
 	
+
 	let locationData = reactive({
-		locationName: '北京',
+		city: '北京',
 		locationId: '101010100',
-		cityList: cityList
+		cityList: cityList,
+		coord: '39.915267,116.403406',
+		adInfo: {}
 	})
 
 	const imgList = reactive([{
@@ -59,9 +64,11 @@
 	])
 
 	let avatarUrl = ref('')
+	const openSetting = () =>  {
+		uni.openSetting()
+	}
 	const getCurrent = () => {
-		locationData.locationId = 101180106
-		locationData.locationName = '郑州'
+		getLocation()
 	}
 	const onchange = (e) => {
 		// locationData.currentCity = e.detail.value?.text
@@ -69,9 +76,16 @@
 		// const value = e.detail.value
 	}
 	const onnodeclick = (node) => {
-		// console.log(node.id, 'node====')
+		console.log(node, 'node====')
 		locationData.locationId = node?.id
-		locationData.locationName = node?.nameZh
+		const coord = `${node?.longitude},${node?.latitude}`
+		locationData.adInfo = {
+			location: { lat: node?.latitude, lng: node?.longitude },
+			nation: node?.countryRegionZh,
+			province: node?.adm1NameZh,
+			city: node?.adm2NameZh,
+			district: node?.nameZh,
+		}
 	}
 	// onShow: function() {
 	// 			console.log('App Show')
@@ -103,8 +117,58 @@
 			}
 		})
 	}
+	
+	const getGeocoder = async (coord) => {
+		const data = {
+			// get_poi: 1, // 是否返回周边地点（POI）列表，可选值：0 不返回(默认) 1 返回
+			location: coord,
+		}
+		const res = await apiGeocoder(data)
+		if(+res?.status === 0) {
+		 console.log(res, 'apiGeocoder======')
+			locationData.adInfo = res?.result?.ad_info
+		}
+		// weatherData.daily7d = res?.daily
+	}
+	const getLocation = () => {
+		uni.getSetting({
+				success(res) {
+					console.log(res.authSetting, 'res.authSetting')
+					if (res.authSetting['scope.userLocation']) {
+						uni.authorize({
+							scope: 'scope.userLocation',
+							success() {
+								uni.getLocation({
+									type: 'gcj02',
+									success(res) {
+										console.log('获取位置成功', res)
+										const coord = `${res?.latitude},${res?.longitude}`
+										getGeocoder(coord)
+									},
+									fail(err) {
+										console.error('获取位置失败', err)
+									}
+								})
+							},
+							fail() {
+								uni.showModal({
+									title: '提示',
+									content: '此功能需要获取您的地理位置权限，请确认授权',
+									success(res) {
+										if (res.confirm) {
+											uni.openSetting()
+										}
+									}
+								})
+							}
+						})
+					}
+				}
+			})
+	}
 	onMounted(() => {
-		console.log('App Show')
+		console.log('App Show====')
+		getLocation()
 		// getuserInfo()
 	})
 	const gotoWeater = (type) => {
@@ -133,7 +197,6 @@
 			url: '/pages/song-list/index'
 		});
 	}
-	
 </script>
 
 <style lang="less" scoped>
@@ -143,41 +206,47 @@
 		justify-content: space-around;
 		align-items: center;
 
-	.home-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 95%;
-		padding: 20rpx;
-		
-		.header-location {
-			width: 400rpx;
-		}
-		.header-current {
-			padding: 20rpx;
-		}
-		.header-user {
+		.home-header {
 			display: flex;
-			flex-direction: column;
-			justify-content: space-around;
+			justify-content: space-between;
 			align-items: center;
-			.common-img {
-				width: 100rpx;
-				height: 100rpx;
-				border-radius: 50%;
+			width: 95%;
+			padding: 20rpx;
+
+			.header-location {
+				width: 400rpx;
+			}
+
+			.header-current {
+				padding: 20rpx;
+			}
+
+			.header-user {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+				align-items: center;
+
+				.common-img {
+					width: 100rpx;
+					height: 100rpx;
+					border-radius: 50%;
+				}
 			}
 		}
-	}
+
 		.home-banner {
 			width: 100%;
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
 			margin-bottom: 80rpx;
+
 			.banner-cont {
 				width: 100%;
 				height: 100%;
 			}
+
 			.banner-common {
 				text-align: center;
 				font-size: 34rpx;
@@ -186,12 +255,15 @@
 				padding: 40rpx;
 				border-radius: 16rpx;
 			}
+
 			.banner-view {
 				// width: 50%;
 			}
+
 			.banner-detail {
 				// width: 50%;
 			}
+
 			.banner-swiper {
 				.swiper-item {
 					width: 100%;
@@ -206,6 +278,7 @@
 			justify-content: space-around;
 			// padding: 0 30rpx;
 			flex-wrap: wrap;
+
 			.cont-common {
 				// width: 50%;
 				margin: 60rpx;
@@ -214,6 +287,7 @@
 				flex-direction: column;
 				justify-content: space-around;
 				align-items: center;
+
 				.common-img {
 					width: 200rpx;
 					height: 200rpx;

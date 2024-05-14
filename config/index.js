@@ -1,11 +1,13 @@
 const config = {
 	hfKey: '906c46820ee44f5bb2ca66a262b7cfd5', // 和风天气KEY
+	qqmapKey: 'GJOBZ-36VCA-AJHKP-CUKS5-LF6EO-42BBY', // 腾讯地图KEY
 	// musicUrl: 'https://xz.hao363.com/'
 	// musicUrl: 'https://music.xf1433.com/'
 	// musicUrl: 'https://mp3.ltyuanfang.cn/'
 	// musicUrl: 'https://music.liuzhijin.cn/'
 	musicUrl: 'https://mp3.ltyuanfang.cn/',
 	geoCityUrl: 'https://geoapi.qweather.com/v2/city/lookup',
+	geocoderUrl: 'https://apis.map.qq.com/ws/geocoder/v1/',
 	// hfBaseUrl: 'https://api.qweather.com',
 	hfBaseUrl: 'https://devapi.qweather.com',
 	hfWeatherNow: '/v7/weather/now', // 实时天预报

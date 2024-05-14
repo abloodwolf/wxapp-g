@@ -1,7 +1,10 @@
 <template>
 	<view class="weather">
 		<view class="weather-now">
-			<view class="now-city">{{ locationData.locationName }}</view>
+			<view class="now-add">
+			<text class="add-city">{{ locationData.city }}</text>
+			<text class="add-district">{{ locationData.district }}</text>
+			</view>
 			<view class="now-cont" @click="gotoWeater">
 				<text :class=" 'cont-item cont-icon qi-' + weatherData?.now?.icon "></text>
 				<text class="cont-item">{{weatherData?.now?.text}}</text>
@@ -50,44 +53,45 @@
 		fxLink: ''
 	})
 	let locationData = reactive({
-		locationName: '',
-		locationId: ''
+		city: '',
+		coord: '',
+		adInfo: {}
 	})
 
 const props = defineProps({
-	  locationName: String,
-	  locationId: String,
+	  city: String,
+	  coord: String,
+	  adInfo: Object,
 	});
-	const { locationName, locationId } = props;
 	
 	onReady(() => {
 
 	})
 	
 	// 获取小时级天气预报
-	const getWeatherNow = async (locationId) => {
+	const getWeatherNow = async (location) => {
 		const data = {
 			// key: wKey,
-			location: locationId,
+			location: location,
 		}
 		const res = await apiWeatherNow(data)
 		// console.log(res, 'apiWeatherNow======')
 		weatherData.now = res?.now
 		weatherData.fxLink = res?.fxLink
 	}
-	const getWeather24h = async (locationId) => {
+	const getWeather24h = async (location) => {
 		const data = {
 			// key: wKey,
-			location: locationId,
+			location: location,
 		}
 		const res = await apiWeather24h(data)
 		// console.log(res, 'apiWeather24h======')
 		weatherData.hourly = res?.hourly
 	}
-	const getWeather7d = async (locationId) => {
+	const getWeather7d = async (location) => {
 		const data = {
 			// key: wKey,
-			location: locationId,
+			location: location,
 		}
 		const res = await apiWeather7d(data)
 		// console.log(res, 'apiWeather7d======')
@@ -99,18 +103,20 @@ const props = defineProps({
 			url: `/pages/weather/index?url=${weatherData?.fxLink}`
 		});
 	}
-	watch(()=>props.locationId,(newValue,oldValue)=>{
-		// console.log(props.locationName, 'locationName, locationId变化了',newValue,oldValue)
-		locationData.locationId = newValue
-		locationData.locationName = props.locationName
-		getWeatherNow(newValue)
-		getWeather24h(newValue)
-		getWeather7d(newValue)
+	watch(()=>props.adInfo,(newValue,oldValue)=>{
+		console.log('city, locationId变化了', newValue, oldValue)
+		if(newValue && oldValue?.location?.lat !== newValue?.location?.lat && oldValue?.location?.lng !== newValue?.location?.lng) {
+			const coord = `${newValue?.location?.lng},${newValue?.location?.lat}`
+			locationData.coord = coord // id
+			locationData.city = newValue?.city
+			locationData.district = newValue?.district
+		}
+	
+		getWeatherNow(locationData.coord)
+		getWeather24h(locationData.coord)
+		getWeather7d(locationData.coord)
 	},{immediate:true,deep:true})
 	onMounted(() => {
-		// getWeatherNow(locationId)
-		// getWeather24h(locationId)
-		// getWeather7d(locationId)
 	})
 </script>
 
@@ -127,9 +133,13 @@ const props = defineProps({
 			margin-bottom: 8rpx;
 			background-image: linear-gradient(225deg, #D0DAE8, #CCD4DF 55%, #A5B3C5);
 
-			.now-city {
-				margin-right: 40rpx;
-				font-size: 56rpx;
+			.now-add {
+				margin-right: 24rpx;
+				font-size: 44rpx;
+				.add-district {
+					font-size: 32rpx;
+					margin-left: 6rpx;
+				}
 			}
 
 			.now-cont {
